@@ -17,8 +17,9 @@ CFLAGS=-Wall -Werror -Wextra -g
 CC = clang-3.5
 INCLUDES=-I libft/includes
 LIB=libft/libft.a
-SRC0=server.c server_loop.c clean_fd.c client_io.c check_fd.c srv_accept.c
-SRC1=client.c client_loop.c
+SRC0=server.c server_loop.c clean_fd.c client_io.c check_fd.c srv_accept.c \
+cmd_serv.c
+SRC1=client.c client_loop.c cmd.c
 OBJ0=$(SRC0:.c=.o)
 OBJ1=$(SRC1:.c=.o)
 

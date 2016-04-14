@@ -1,13 +1,37 @@
 #include "irc_server.h"
 
+int			check_nl(char *str, char **line)
+{
+	int			i;
+
+	i = 0;
+	if (!(*line))
+		*line = "";
+	*line = ft_strjoin(*line, str);
+	while (str[i] != 0)
+	{		
+		if (str[i] == '\n')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 void	client_read(t_env *e, int cs)
 {
-	int	r;
-	int	i;
+	int		r;
+	int		i;
+	char	*line;
 
-	r = recv(cs, e->fds[cs].buf_read, BUF_SIZE, 0);
-	printf("%s", e->fds[cs].buf_read);
-	if (r <= 0)
+	line = NULL;
+	ft_bzero(e->fds[cs].buf_read, BUF_SIZE);
+	while ((r = recv(cs, e->fds[cs].buf_read, BUF_SIZE, 0)))
+	{
+		if (check_nl(e->fds[cs].buf_read, &line))
+			break ;
+		ft_bzero(e->fds[cs].buf_read, BUF_SIZE);
+	}
+	if (!line)
 	{
 		close(cs);
 		clean_fd(&e->fds[cs]);
@@ -15,16 +39,21 @@ void	client_read(t_env *e, int cs)
 	}
 	else
 	{
-		i = 0;
-		while (i < e->maxfd)
-		{
-			if ((e->fds[i].type == FD_CLIENT) &&
-				(i != cs))
-				send(i, e->fds[cs].buf_read, r, 0);
-			i++;
+		if (line[0] == '/')
+			cmd(e, cs, line);
+		else
+		{	
+			i = 0;
+			while (i < e->maxfd)
+			{
+				if ((e->fds[i].type == FD_CLIENT) &&
+					(i != cs))
+					send(i, line, r, 0);
+				i++;
+			}
 		}
 	}
-	ft_bzero(e->fds[cs].buf_read, BUF_SIZE);
+	// ft_bzero(line, BUF_SIZE);
 }
 
 void	client_write(t_env *e, int cs)

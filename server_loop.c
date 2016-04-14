@@ -14,12 +14,6 @@ void		init_fd(t_env *e)
 		if (e->fds[i].type != FD_FREE)
 		{
 			FD_SET(i, &e->readfds);
-
-			if (e->fds[i].type == FD_SERV) {
-				size_t debug_size = ft_strlen(e->fds[i].buf_write);
-				printf("fd : %d, debug_size : %zu\n", i, debug_size);
-			}
-
 			if (ft_strlen(e->fds[i].buf_write) > 0)
 			{
 				FD_SET(i, &e->writefds);
@@ -62,6 +56,6 @@ void		server_loop(t_env *e)
 		init_fd(e);
 		do_select(e);
 		check_fd(e);
-		write_client(e);
+		// write_client(e);
 	}
 }
