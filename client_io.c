@@ -31,6 +31,7 @@ void	client_read(t_env *e, int cs)
 			break ;
 		ft_bzero(e->fds[cs].buf_read, BUF_SIZE);
 	}
+	printf("line %s\n", line);
 	if (!line)
 	{
 		close(cs);
@@ -40,7 +41,10 @@ void	client_read(t_env *e, int cs)
 	else
 	{
 		if (line[0] == '/')
+		{
+			printf("CMD\n");
 			cmd(e, cs, line);
+		}
 		else
 		{	
 			i = 0;
@@ -53,7 +57,8 @@ void	client_read(t_env *e, int cs)
 			}
 		}
 	}
-	// ft_bzero(line, BUF_SIZE);
+	if (line)
+		free(line);
 }
 
 void	client_write(t_env *e, int cs)

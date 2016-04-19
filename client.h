@@ -32,8 +32,10 @@ void		input_line(t_env *e, int sockfd);
 void		change_nick(t_env *e, char *line);
 void		cmd(t_env *e, char *line);
 void		join_chan(t_env *e, char *line);
-void		leave_chan(t_env *e);
-// void		msg_user(t_env *e, char *line);
+void		leave_chan(t_env *e, char *line);
+void		msg_user(t_env *e, char *line);
+void		cmd_who();
+void		cmd_connect();
 
 
 #endif

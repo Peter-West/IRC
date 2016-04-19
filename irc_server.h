@@ -3,9 +3,9 @@
 # define MAX_FD			10
 # define BUF_SIZE		5
 
-# define FD_FREE	0
-# define FD_SERV	1
-# define FD_CLIENT	2
+# define FD_FREE		0
+# define FD_SERV		1
+# define FD_CLIENT		2
 
 # include "libft.h"
 # include <sys/types.h>
@@ -17,39 +17,19 @@
 # include <sys/select.h>
 # include <sys/time.h>
 # include <sys/resource.h>
-/*
-typedef struct 			s_ch_us
-{
-	char				*name;
-	struct s_ch_us		*next;
-}						t_ch_us;*/
-
-typedef struct			s_user
-{
-	char				*nickname;
-	// t_ch_us				ch_us;
-	char				*chan;
-	struct s_user		*next;
-}						t_user;
-
-typedef struct			s_chan
-{
-	char				*name;
-	t_user				*users;
-	struct s_chan		*next;
-}						t_chan;
 
 typedef struct			s_fd
 {
-	int		type;
-	void	(*fct_read)();
-	void	(*fct_write)();
-	char	buf_read[BUF_SIZE + 1];
-	char	buf_write[BUF_SIZE + 1];
-	t_user	user;
+	int					type;
+	void				(*fct_read)();
+	void				(*fct_write)();
+	char				buf_read[BUF_SIZE + 1];
+	char				buf_write[BUF_SIZE + 1];
+	char				*nickname;
+	char				*channel;	
 }						t_fd;
 
-typedef struct  		s_env
+typedef struct			s_env
 {
 	int					port;
 	int					sockfd;
@@ -62,7 +42,6 @@ typedef struct  		s_env
 	fd_set				writefds;
 	int					maxfd;
 	t_fd				*fds;
-	t_chan				*chan;
 }						t_env;
 
 void		fd_env(t_env *e);
@@ -82,6 +61,11 @@ int			check_nl(char *str, char **line);
 void		cmd(t_env *e, int cs, char *line);
 void		change_nick_serv(t_env *e, int cs, char *line);
 void		cmd_who(t_env *e, int cs);
+void		join_chan(t_env *e, int cs, char *line);
+void		leave_chan(t_env *e, int cs, char *line);
+void		msg_user(t_env *e, char *line);
+void		cmd_connect(t_env *e, int cs);
+char		*ret_string_split(char *line, int s);
 
 
 #endif

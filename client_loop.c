@@ -7,11 +7,13 @@ void		cmd(t_env *e, char *line)
 	else if (!ft_strncmp("/join ", line, 6))
 		join_chan(e, line);
 	else if (!ft_strncmp("/leave ", line, 6))
-		leave_chan(e);
-	// else if (!ft_strncmp("/msg ", line, 4))
-	// 	msg_user(e, line);
-/*	else if (!ft_strncmp("/who ", line, 5))
-	else if (!ft_strncmp("/connect ", line, 9))*/
+		leave_chan(e, line);
+	else if (!ft_strncmp("/msg ", line, 4))
+		msg_user(e, line);
+	else if (!ft_strncmp("/who\n", line, 5))
+		cmd_who();
+	else if (!ft_strncmp("/connect ", line, 9))
+		cmd_connect();
 	else
 		printf("Command unknown\n");
 }

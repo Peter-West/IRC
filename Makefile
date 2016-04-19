@@ -18,8 +18,8 @@ CC = clang-3.5
 INCLUDES=-I libft/includes
 LIB=libft/libft.a
 SRC0=server.c server_loop.c clean_fd.c client_io.c check_fd.c srv_accept.c \
-cmd_serv.c
-SRC1=client.c client_loop.c cmd.c
+cmd_serv.c cmd_serv2.c ret_string_split.c
+SRC1=client.c client_loop.c cmd_client.c
 OBJ0=$(SRC0:.c=.o)
 OBJ1=$(SRC1:.c=.o)
 
