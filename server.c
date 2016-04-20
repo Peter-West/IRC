@@ -25,7 +25,7 @@ void		ft_check_port(t_env *e, char *port)
 
 void		init_env(t_env *e)
 {
-	if ((e->sockfd = socket(PF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0)) < 0)
+	if ((e->sockfd = socket(PF_INET, SOCK_STREAM, 0)) < 0)
 		ft_error(1, "Can't open socket");
 	e->serv_ad.sin_family = AF_INET;
 	e->serv_ad.sin_port = htons(e->port);

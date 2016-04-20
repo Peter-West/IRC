@@ -43,12 +43,18 @@ int		init(char **argv)
 	return (sock_fd);
 }
 
-int main(int argc, char **argv)
+
+void	connect_serv(int argc, char **argv)
 {
 	int		sock_fd;
 
 	check_args(argc, argv);
 	sock_fd = init(argv);
 	client_loop(sock_fd);
+}
+
+int main(int argc, char **argv)
+{
+	connect_serv(argc, argv);
 	return (0);
 }

@@ -12,63 +12,61 @@
 
 #include "libft.h"
 
-int		ft_strlen_lnum(char const *s, char c, int k)
+static int    	count_word(const char *str, char c)
 {
+	int		nb;
 	int		i;
 
+	nb = 0;
 	i = 0;
-	while (s[k] != c && s[k] != '\0')
+	while (str[i])
 	{
-		++k;
-		++i;
-	}
-	return (i);
-}
-
-int		ft_strlen_wnum(char const *s, char c)
-{
-	int		k;
-	int		i;
-
-	k = 0;
-	i = 0;
-	while (s[k] != '\0')
-	{
-		while (s[k] == c)
-			k++;
-		if (s[k] == '\0')
-			break ;
-		while (s[k] != c && s[k] != '\0')
-			k++;
+		if (str[i - 1] == c && str[i] != c)
+		{
+			nb++;
+		}
 		i++;
 	}
-	return (i);
+	if (str[0] != c && str[0] != '\0')
+		nb++;
+	return (nb);
 }
 
-char	**ft_strsplit(char const *s, char c)
+static size_t	c_stop(const char *s, int start, char c)
 {
-	char	**new_strs;
+	size_t	x;
+
+	x = 0;
+	while (s[start] && s[start] != c)
+	{
+		start++;
+		x++;
+	}
+	return (x);
+}
+
+char			**ft_strsplit(char const *s, char c)
+{
+	char	**tab;
+	int		word;
 	int		i;
 	int		j;
-	int		k;
-	int		wnum;
 
 	i = 0;
-	k = 0;
-	wnum = ft_strlen_wnum(s, c);
-	if (s == NULL || (!(new_strs = malloc(sizeof(char *) * (wnum + 1)))))
+	j = 0;
+	word = count_word(s, c);
+	tab = (char **)malloc(sizeof(tab) * word + 1);
+	if (!tab)
 		return (NULL);
-	while (wnum--)
+	while (i < word)
 	{
-		j = 0;
-		if ((!(new_strs[i] = malloc(ft_strlen_lnum(s, c, k) + 1))))
-			return (NULL);
-		while (s[k] == c)
-			k++;
-		while (s[k] != c && s[k] != '\0')
-			new_strs[i][j++] = s[k++];
-		new_strs[i++][j] = '\0';
+		while (s[j] && s[j] == c)
+			j++;
+		tab[i] = ft_strsub(s, j, c_stop(s, j, c));
+		i++;
+		while (s[j] && s[j] != c)
+			j++;
 	}
-	new_strs[i] = NULL;
-	return (new_strs);
+	tab[i] = 0;
+	return (tab);
 }

@@ -38,7 +38,7 @@ CC = gcc
 
 INCLUDE = includes/
 
-FLAGS = -Wextra -Wall -Werror -g
+FLAGS = -Wextra -Wall -Werror
 
 all: $(NAME)
 

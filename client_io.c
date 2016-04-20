@@ -31,15 +31,20 @@ void	client_read(t_env *e, int cs)
 			break ;
 		ft_bzero(e->fds[cs].buf_read, BUF_SIZE);
 	}
-	printf("line %s\n", line);
 	if (!line)
 	{
 		close(cs);
 		clean_fd(&e->fds[cs]);
 		printf("client #%d gone away\n", cs);
+		e->fds[cs].type = FD_FREE;
+		e->fds[cs].nickname = NULL;
+		e->fds[cs].channel = NULL;
+		clean_fd(&e->fds[cs]);
 	}
 	else
 	{
+		line = ft_strtrim(line);
+		printf("line : %s\n", line);
 		if (line[0] == '/')
 		{
 			printf("CMD\n");

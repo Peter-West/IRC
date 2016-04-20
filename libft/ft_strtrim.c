@@ -54,7 +54,7 @@ char	*ft_strtrim(char const *s)
 	len_before = ft_strlentrim_before(s);
 	len = ft_strlen((char *)s) - (len_before + ft_strlentrim_after(s));
 	new_s = (char *)malloc(sizeof(char) * len + 1);
-	if (new_s == NULL)
+	if (new_s == NULL || len < 1)
 		return (new_s = ft_strnew(0));
 	tmp = new_s;
 	i = len_before;

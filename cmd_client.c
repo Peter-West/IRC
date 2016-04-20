@@ -10,9 +10,10 @@ void	change_nick(t_env *e, char *line)
 	split = ft_strsplit(line, ' ');
 	if (!split[1])
 	{
-		printf(">> enter a 9 character nickname\n");
+		printf(">> enter a 9 characters nickname\n");
 		return ;
 	}
+	split[1] = ft_strtrim(split[1]);
 	if (ft_strlen(split[1]) > 9)
 		nick = ft_strsub(split[1], 0, 9);
 	else
@@ -35,13 +36,21 @@ void	join_chan(t_env *e, char *line)
 		printf(">> enter a channel name\n");
 		return ;
 	}
-	e->chan = ft_strdup(split[1]);
-	printf(">> You've joined : %s\n", e->chan);
+	if (!e->chan)
+	{
+		split[1] = ft_strtrim(split[1]);
+		e->chan = ft_strdup(split[1]);
+		printf(">> You've joined : %s\n", e->chan);
+	}
+	else
+	{
+		printf(">> You must leave %s before joining a new channel\n", e->chan);
+	}
 	while (split[i])
 		free(split[i++]);
 }
 
-void	leave_chan(t_env *e, char *line) //Probleme : wrong...
+void	leave_chan(t_env *e, char *line)
 {
 	int		i;
 	char	**split;
@@ -53,7 +62,8 @@ void	leave_chan(t_env *e, char *line) //Probleme : wrong...
 		printf(">> enter a channel name\n");
 		return ;
 	}
-	if (split[1] == e->chan)
+	split[1] = ft_strtrim(split[1]);
+	if (!ft_strcmp(split[1],e->chan))
 	{
 		printf(">> You left %s\n", e->chan);
 		if (e->chan)
@@ -61,7 +71,7 @@ void	leave_chan(t_env *e, char *line) //Probleme : wrong...
 		e->chan = NULL;
 	}
 	else
-		printf(">> Wrong channel name\n");	
+		printf(">> Wrong channel name\n");
 	while (split[i])
 		free(split[i++]);
 }
@@ -69,18 +79,33 @@ void	leave_chan(t_env *e, char *line) //Probleme : wrong...
 void	msg_user(t_env *e, char *line)
 {
 	char	**split;
+	int		i;
 	(void)e;
 
+	i = 0;
 	split = ft_strsplit(line, ' ');
 	printf(">> Message send to %s\n", split[1]);
+	while (split[i])
+		free(split[i++]);
+}
+
+
+void	cmd_connect(t_env *e, char *line)
+{
+	char	**split;
+	int		i;
+
+
+	i = 0;
+	send(e->sockfd, "/connect ", 10, 0);
+	split = ft_strsplit(line, ' ');
+	while (split[i])
+		i++;
+	split[2] = ft_strtrim(split[2]);
+	connect_serv(i, split);
 }
 
 void	cmd_who()
-{
-
-}
-
-void	cmd_connect()
 {
 
 }

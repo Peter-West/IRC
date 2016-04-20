@@ -13,7 +13,7 @@ void		cmd(t_env *e, char *line)
 	else if (!ft_strncmp("/who\n", line, 5))
 		cmd_who();
 	else if (!ft_strncmp("/connect ", line, 9))
-		cmd_connect();
+		cmd_connect(e, line);
 	else
 		printf("Command unknown\n");
 }
@@ -35,55 +35,83 @@ int			check_nl(char *str, char **line)
 	return (0);
 }
 
-void	input_line(t_env *e, int sockfd)
+void	input_line(t_env *e, int cs)
 {
 	int		read_ret;
 	char	*line;
+	(void)cs;
 
 	read_ret = 0;
 	line = NULL;
-	ft_bzero(e->buf, BUFF_SIZE);
-	while ((read_ret = read(0, &e->buf, BUFF_SIZE)))
+	ft_bzero(e->buf_read, BUF_SIZE);
+	while ((read_ret = read(0, &e->buf_read, BUF_SIZE)))
 	{
-		if (check_nl(e->buf, &line))
+		if (check_nl(e->buf_read, &line))
 			break ;
-		ft_bzero(e->buf, BUFF_SIZE);
+		ft_bzero(e->buf_read, BUF_SIZE);
 	}
 	if (line[0] == '/')
 		cmd(e, line);
-	send(sockfd, line, ft_strlen(line), 0);
+	send(e->sockfd, line, ft_strlen(line), 0);
 	free(line);
 	line = NULL;
 }
 
-void	rcv_msg(int sockfd)
+void	rcv_msg(t_env *e, int cs)
 {
-	char	buf[BUFF_SIZE + 1];
 	int		ret = 0;
+	(void)cs;
 
-	ft_bzero(buf, BUFF_SIZE);
-	ret = recv(sockfd, &buf, BUFF_SIZE, 0);
-	if (ret <= 0)
+	ft_bzero(e->buf_write, BUF_SIZE);
+	ret = recv(e->sockfd, &e->buf_write, BUF_SIZE, 0);
+	if (ret < 0)
 	{
-		close(sockfd);
+		close(e->sockfd);
 		printf("Server connection lost\n");
 	}
 	else
 	{
-		printf("%s\n", buf);
-		ft_bzero(buf, BUFF_SIZE);
+		printf("%s\n", e->buf_write);
+		ft_bzero(e->buf_write, BUF_SIZE);
 	}
+}
+
+void	fd_env(t_env *e)
+{
+/*	struct rlimit	rlp;
+	// int				i;
+
+	getrlimit(RLIMIT_NOFILE, &rlp);
+	e->maxfd = rlp.rlim_cur;*/
+	e->maxfd = 4;
+	e->type = FD_CLIENT;
+	e->fct_read = client_accept;
+	e->fct_write = NULL;	
+/*	e->fds = (t_fd*)malloc(sizeof(t_fd) * e->maxfd);
+	i = 0;
+	while (i < e->maxfd)
+	{
+		clean_fd(&e->fds[i]);
+		i++;
+	}*/
 }
 
 void	client_loop(int sockfd)
 {
 	t_env	e;
 
-	e.nickname = "user";
+	// e.nickname = "user";
+	// e.chan = NULL;
+	e.sockfd = sockfd;
+	// e.fct_read = client_accept;
+	fd_env(&e);
 	printf("sockfd : %d\n", sockfd);
 	while (1)
 	{
-		input_line(&e, sockfd);
+		init_fd(&e);
+		do_select(&e);
+		check_fd(&e);
+		// input_line(&e);
 		// rcv_msg(sockfd);
 	}
 }
