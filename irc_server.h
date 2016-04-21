@@ -63,7 +63,7 @@ void		change_nick_serv(t_env *e, int cs, char *line);
 void		cmd_who(t_env *e, int cs);
 void		join_chan(t_env *e, int cs, char *line);
 void		leave_chan(t_env *e, int cs, char *line);
-void		msg_user(t_env *e, char *line);
+void		msg_user(t_env *e, int cs, char *line);
 void		cmd_connect(t_env *e, int cs);
 char		*ret_string_split(char *line, int s);
 

@@ -20,17 +20,24 @@ void		change_nick_serv(t_env *e, int cs, char *line)
 void		cmd_who(t_env *e, int cs)
 {
 	int		i;
+	int		len;
 
 	i = 0;
 	while (i < e->maxfd)
 	{
-		if (e->fds[cs].channel && e->fds[i].channel && !ft_strcmp(e->fds[i].channel, e->fds[cs].channel))
+		if (e->fds[cs].channel && e->fds[i].channel 
+			&& !ft_strcmp(e->fds[i].channel, e->fds[cs].channel))
 		{
+			ft_strcat(e->fds[cs].buf_write, e->fds[i].nickname);
+			ft_strcat(e->fds[cs].buf_write, " is on ");
+			ft_strcat(e->fds[cs].buf_write, e->fds[i].channel);
+			ft_strcat(e->fds[cs].buf_write, "\n");
 			printf(">>%d. %s is on %s\n", i, e->fds[i].nickname,e->fds[i].channel);
 		}
-		printf(">>%d. %s is on %s\n", i, e->fds[i].nickname,e->fds[i].channel);
 		i++;
 	}
+	len = ft_strlen(e->fds[cs].buf_write);
+	e->fds[cs].buf_write[len - 1] = '\0';
 }
 
 void		join_chan(t_env *e, int cs, char *line)
@@ -58,9 +65,7 @@ void		leave_chan(t_env *e, int cs, char *line)
 	channel_name = ret_string_split(line, 1);
 	channel_name = ft_strtrim(channel_name);
 	if (!ft_strcmp(e->fds[cs].channel, channel_name))
-	{
 		e->fds[cs].channel = NULL;
-	}
 	else
 	{
 		printf(">> %s in channel : %s\n", e->fds[cs].nickname,
@@ -68,7 +73,7 @@ void		leave_chan(t_env *e, int cs, char *line)
 	}
 }
 
-void		msg_user(t_env *e, char *line)
+void		msg_user(t_env *e, int cs, char *line)
 {
 	char	*to;
 	char	*msg;
@@ -80,14 +85,18 @@ void		msg_user(t_env *e, char *line)
 	msg = ft_strtrim(msg);
 	while (i < e->maxfd)
 	{
-		if (!ft_strcmp(e->fds[i].nickname, to))
+		if (e->fds[i].nickname && !ft_strcmp(e->fds[i].nickname, to))
 		{
+			ft_strcat(e->fds[cs].buf_write, "#");
+			ft_strcat(e->fds[cs].buf_write, ft_itoa(i));
+			ft_strcat(e->fds[cs].buf_write, " ");
+			ft_strcat(e->fds[cs].buf_write, msg);
 			printf(">> to : %s, msg : %s\n", to, msg);
 			return ;
 		}
 		i++;
 	}
-	printf(">> User unknown\n");
+	printf(">> Message wasn't sent : User unknown\n");
 }
 
 void		cmd_connect(t_env *e, int cs)
@@ -106,14 +115,14 @@ void		cmd(t_env *e, int cs, char *line)
 {
 	if (!ft_strncmp("/nick ", line, 6))
 		change_nick_serv(e, cs, line);
-	else if (!ft_strncmp("/who\n", line, 5))
+	else if (!ft_strncmp("/who\0", line, 5))
 		cmd_who(e, cs);
 	else if (!ft_strncmp("/join ", line, 6))
 		join_chan(e, cs, line);
 	else if (!ft_strncmp("/leave ", line, 6))
 		leave_chan(e, cs, line);
 	else if (!ft_strncmp("/msg ", line, 4))
-		msg_user(e, line);
+		msg_user(e, cs, line);
 	else if (!ft_strncmp("/connect ", line, 9))
 		cmd_connect(e, cs);
 }

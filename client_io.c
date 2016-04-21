@@ -46,20 +46,18 @@ void	client_read(t_env *e, int cs)
 		line = ft_strtrim(line);
 		printf("line : %s\n", line);
 		if (line[0] == '/')
-		{
-			printf("CMD\n");
 			cmd(e, cs, line);
-		}
 		else
 		{	
 			i = 0;
 			while (i < e->maxfd)
 			{
-				if ((e->fds[i].type == FD_CLIENT) &&
-					(i != cs))
+				if ((e->fds[i].type == FD_CLIENT) && e->fds[cs].channel 
+					&& e->fds[i].channel && (i != cs) 
+					&& !ft_strcmp(e->fds[i].channel, e->fds[cs].channel))
 				{
 					send(i, line, ft_strlen(line), 0);
-					printf("to : %d, line sent : %s\n", i, line);
+					printf("sent to %s, on %s\n", e->fds[i].nickname, e->fds[i].channel);
 				}
 				i++;
 			}
@@ -69,32 +67,51 @@ void	client_read(t_env *e, int cs)
 		free(line);
 }
 
+int		ret_fd_value(char *s)
+{
+	int		i;
+	int		j;
+	char	fd[4];
+
+	i = 0;
+	j = 0;
+	while (s[i] != ' ')
+	{
+		if (s[i] != '#')
+		{
+			fd[j] = s[i];
+			j++;
+		}
+		i++;
+	}
+	return (ft_atoi(fd));
+}
+
+int		len_buf_msg(char *s)
+{
+	int		i;
+
+	i = 0;
+	while (s[i] != ' ')
+		i++;
+	return (i);
+}
+
 void	client_write(t_env *e, int cs)
 {
-	/*int tmp = cs;
-	int tmp0 = e->maxfd;
-	tmp++;
-	tmp0++;*/
-	int	r;
-	int	i;
-	int srv;
+	int	fd;
+	int len;
 
-	srv = 0;
-	while (srv < e->maxfd)
+	fd = -1;
+	len = ft_strlen(e->fds[cs].buf_write) - len_buf_msg(e->fds[cs].buf_write);
+	if (e->fds[cs].buf_write[0] == '#')
 	{
-		if (e->fds[srv].type == FD_SERV)
-			break ;
-		srv++;
+		fd = ret_fd_value(e->fds[cs].buf_write);
+		ft_strncpy(e->fds[cs].buf_write,
+			&e->fds[cs].buf_write[len_buf_msg(e->fds[cs].buf_write) + 1], len);
 	}
-	printf("Hmmmm ** fd srv : %d et CS :%d\n", srv, cs);
-	i = 0;
-	if ((r = read(0, &e->fds[srv].buf_write, BUF_SIZE)))
-	{
-		printf("debug : %s\n", e->fds[srv].buf_write);
-		while (i < e->maxfd) {
-			if (e->fds[i].type == FD_CLIENT && i != srv)
-				send(i, e->fds[srv].buf_write, r, 0);
-			i++;
-		}
-	}
+	else
+		fd = cs;
+	send(fd, e->fds[cs].buf_write, ft_strlen(e->fds[cs].buf_write), 0);
+	ft_bzero(e->fds[cs].buf_write, BUF_SIZE);
 }

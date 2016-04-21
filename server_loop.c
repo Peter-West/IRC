@@ -15,10 +15,7 @@ void		init_fd(t_env *e)
 		{
 			FD_SET(i, &e->readfds);
 			if (ft_strlen(e->fds[i].buf_write) > 0)
-			{
 				FD_SET(i, &e->writefds);
-				printf("write isset\n");
-			}
 			// e->max = (e->max > i ? e->max : i);
 		}
 		i++;
