@@ -2,9 +2,9 @@
 
 void			srv_accept(t_env *e, int s)
 {
-	int			cs;
+	int					cs;
 	struct sockaddr_in	csin;
-	socklen_t		csin_len;
+	socklen_t			csin_len;
 
 	csin_len = sizeof(csin);
 	cs = accept(s, (struct sockaddr*)&csin, &csin_len);
@@ -16,4 +16,6 @@ void			srv_accept(t_env *e, int s)
 	e->fds[cs].fct_write = client_write;
 	e->fds[cs].nickname = "user";
 	e->fds[cs].channel = NULL;
+
+	// send(cs, "yo\n", 3, 0);
 }

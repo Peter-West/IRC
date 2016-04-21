@@ -1,7 +1,7 @@
 #ifndef IRC_SERVER_H
 # define IRC_SERVER_H
 # define MAX_FD			10
-# define BUF_SIZE		5
+# define BUF_SIZE		4096
 
 # define FD_FREE		0
 # define FD_SERV		1

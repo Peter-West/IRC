@@ -11,7 +11,7 @@ void	check_fd(t_env *e)
 			e->fds[i].fct_read(e, i);
 		if (FD_ISSET(i, &e->writefds))
 		{
-			printf("check fd writefds i : %d\n", i);
+			printf("VV check fd writefds i : %d\n", i);
 			e->fds[i].fct_write(e, i);
 		}
 		if (FD_ISSET(i, &e->readfds) || FD_ISSET(i, &e->writefds))

@@ -31,7 +31,7 @@ int		init(char **argv)
 	printf("machine %s\nport %s\n", argv[1], argv[2]);
 	if ((sock_fd = socket(PF_INET, SOCK_STREAM, 0)) < 0)
 		ft_error(1, "Can't open socket");
-	printf("socket : %d\n", sock_fd);
+	printf("sock fd : %d\n", sock_fd);
 	if (!(server_ad = gethostbyname(argv[1])))
 		ft_error(1, "No such a host");
 	addr.sin_family = AF_INET;

@@ -17,6 +17,7 @@ void		init_fd(t_env *e)
 			if (ft_strlen(e->fds[i].buf_write) > 0)
 			{
 				FD_SET(i, &e->writefds);
+				printf("write isset\n");
 			}
 			// e->max = (e->max > i ? e->max : i);
 		}
@@ -26,25 +27,12 @@ void		init_fd(t_env *e)
 
 void		do_select(t_env *e)
 {
-	if ((e->ret_sel = select (MAX_FD + 1, &e->readfds, &e->writefds, NULL, NULL)) < 0)
+	struct timeval timeout;
+
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
+	if ((e->ret_sel = select (MAX_FD + 1, &e->readfds, &e->writefds, NULL, &timeout)) < 0)
 		ft_error(-1, "select ERROR");
-}
-
-void		write_client(t_env *e) {
-	int r;
-int srv;
-
-	srv = 0;
-	while (srv < e->maxfd)
-	{
-		if (e->fds[srv].type == FD_SERV)
-			break ;
-		srv++;
-	}
-	r = read(0, &e->fds[srv].buf_write, BUF_SIZE);
-	/*if (r > 0) {
-		send()
-	}*/
 }
 
 void		server_loop(t_env *e)
@@ -56,6 +44,5 @@ void		server_loop(t_env *e)
 		init_fd(e);
 		do_select(e);
 		check_fd(e);
-		// write_client(e);
 	}
 }

@@ -57,7 +57,10 @@ void	client_read(t_env *e, int cs)
 			{
 				if ((e->fds[i].type == FD_CLIENT) &&
 					(i != cs))
-					send(i, line, r, 0);
+				{
+					send(i, line, ft_strlen(line), 0);
+					printf("to : %d, line sent : %s\n", i, line);
+				}
 				i++;
 			}
 		}
@@ -83,7 +86,7 @@ void	client_write(t_env *e, int cs)
 			break ;
 		srv++;
 	}
-	printf("fd srv : %d et CS :%d\n", srv, cs);
+	printf("Hmmmm ** fd srv : %d et CS :%d\n", srv, cs);
 	i = 0;
 	if ((r = read(0, &e->fds[srv].buf_write, BUF_SIZE)))
 	{

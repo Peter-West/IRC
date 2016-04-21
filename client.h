@@ -1,6 +1,6 @@
 #ifndef CLIENT_H
 # define CLIENT_H
-# define BUF_SIZE 5
+# define BUF_SIZE 		4096
 
 # define FD_FREE		0
 # define FD_CLIENT		1
@@ -25,6 +25,7 @@ typedef struct		s_env
 	fd_set			readfds;
 	fd_set			writefds;
 	void			(*fct_read)();
+	void			(*fct_recv)();
 	void			(*fct_write)();
 	char			buf_read[BUF_SIZE + 1];
 	char			buf_write[BUF_SIZE + 1];
@@ -48,5 +49,7 @@ void		check_fd(t_env *e);
 void		client_accept(t_env *e, int s);
 void		init_fd(t_env *e);
 void		rcv_msg(t_env *e, int cs);
+void		send_msg(t_env *e, int cs);
+
 
 #endif

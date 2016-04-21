@@ -106,7 +106,7 @@ void		cmd(t_env *e, int cs, char *line)
 {
 	if (!ft_strncmp("/nick ", line, 6))
 		change_nick_serv(e, cs, line);
-	else if (!ft_strncmp("/who\0", line, 5))
+	else if (!ft_strncmp("/who\n", line, 5))
 		cmd_who(e, cs);
 	else if (!ft_strncmp("/join ", line, 6))
 		join_chan(e, cs, line);

@@ -38,32 +38,38 @@ int			check_nl(char *str, char **line)
 void	input_line(t_env *e, int cs)
 {
 	int		read_ret;
-	char	*line;
 	(void)cs;
 
 	read_ret = 0;
-	line = NULL;
 	ft_bzero(e->buf_read, BUF_SIZE);
-	while ((read_ret = read(0, &e->buf_read, BUF_SIZE)))
-	{
-		if (check_nl(e->buf_read, &line))
-			break ;
-		ft_bzero(e->buf_read, BUF_SIZE);
-	}
-	if (line[0] == '/')
-		cmd(e, line);
-	send(e->sockfd, line, ft_strlen(line), 0);
-	free(line);
-	line = NULL;
+	read_ret = read(0, &e->buf_read, BUF_SIZE);
+	e->buf_read[read_ret] = '\0';
+	if (e->buf_read[0] == '/')
+		cmd(e, e->buf_read);
+	ft_strcat(e->buf_write, e->buf_read);
+}
+
+void	send_msg(t_env *e, int cs)
+{
+	(void)cs;
+	send(e->sockfd, e->buf_write, ft_strlen(e->buf_write), 0);
+	ft_bzero(e->buf_write, BUF_SIZE);
 }
 
 void	rcv_msg(t_env *e, int cs)
 {
 	int		ret = 0;
+	char	*line;
 	(void)cs;
 
-	ft_bzero(e->buf_write, BUF_SIZE);
-	ret = recv(e->sockfd, &e->buf_write, BUF_SIZE, 0);
+	ft_bzero(e->buf_read, BUF_SIZE);
+	while ((ret = recv(e->sockfd, &e->buf_read, BUF_SIZE, 0)) > 0)
+	{
+		e->buf_read[ret] = '\0';
+		if (check_nl(e->buf_read, &line)) //buf read ERROR !
+			break ;
+		ft_bzero(e->buf_read, BUF_SIZE);
+	}
 	if (ret < 0)
 	{
 		close(e->sockfd);
@@ -71,29 +77,31 @@ void	rcv_msg(t_env *e, int cs)
 	}
 	else
 	{
-		printf("%s\n", e->buf_write);
-		ft_bzero(e->buf_write, BUF_SIZE);
+		printf("%s\n", line);
+		ft_bzero(e->buf_read, BUF_SIZE);
 	}
+	free(line);
+	line = NULL;
+	
 }
 
 void	fd_env(t_env *e)
 {
-/*	struct rlimit	rlp;
-	// int				i;
-
-	getrlimit(RLIMIT_NOFILE, &rlp);
-	e->maxfd = rlp.rlim_cur;*/
-	e->maxfd = 4;
+	e->maxfd = e->sockfd;
 	e->type = FD_CLIENT;
-	e->fct_read = client_accept;
-	e->fct_write = NULL;	
-/*	e->fds = (t_fd*)malloc(sizeof(t_fd) * e->maxfd);
-	i = 0;
-	while (i < e->maxfd)
-	{
-		clean_fd(&e->fds[i]);
-		i++;
-	}*/
+	e->fct_read = input_line;
+	e->fct_recv = rcv_msg;
+	e->fct_write = send_msg;
+	e->nickname = "user";
+	e->chan = NULL;
+}
+
+void	rcc(t_env *e)
+{
+	int	r;
+
+	r = recv(e->sockfd, e->buf_read, BUF_SIZE, 0);
+	printf("len read : %d\n", r);
 }
 
 void	client_loop(int sockfd)
@@ -103,14 +111,13 @@ void	client_loop(int sockfd)
 	// e.nickname = "user";
 	// e.chan = NULL;
 	e.sockfd = sockfd;
-	// e.fct_read = client_accept;
 	fd_env(&e);
-	printf("sockfd : %d\n", sockfd);
 	while (1)
 	{
 		init_fd(&e);
 		do_select(&e);
 		check_fd(&e);
+		// rcc(&e);
 		// input_line(&e);
 		// rcv_msg(sockfd);
 	}
