@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   irc_server.h                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ppellegr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/04/26 18:15:08 by ppellegr          #+#    #+#             */
+/*   Updated: 2016/04/26 18:15:12 by ppellegr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef IRC_SERVER_H
 # define IRC_SERVER_H
 # define MAX_FD			10
@@ -26,7 +38,7 @@ typedef struct			s_fd
 	char				buf_read[BUF_SIZE + 1];
 	char				buf_write[BUF_SIZE + 1];
 	char				*nickname;
-	char				*channel;	
+	char				*channel;
 }						t_fd;
 
 typedef struct			s_env
@@ -44,28 +56,30 @@ typedef struct			s_env
 	t_fd				*fds;
 }						t_env;
 
-void		fd_env(t_env *e);
-void		init_env(t_env *e);
-void		clean_fd(t_fd *fd);
-void		check_fd(t_env *e);
-void		ft_check_port(t_env *e, char *port);
-void		ft_error(int i, char *s);
-void		server_loop(t_env *e);
-int			msg_received(t_env *e, int fd);
-void		init_fd(t_env *e);
-void		srv_accept(t_env *e, int s);
-void		do_select(t_env *e);
-void		client_read(t_env *e, int cs);
-void		client_write(t_env *e, int cs);
-int			check_nl(char *str, char **line);
-void		cmd(t_env *e, int cs, char *line);
-void		change_nick_serv(t_env *e, int cs, char *line);
-void		cmd_who(t_env *e, int cs);
-void		join_chan(t_env *e, int cs, char *line);
-void		leave_chan(t_env *e, int cs, char *line);
-void		msg_user(t_env *e, int cs, char *line);
-void		cmd_connect(t_env *e, int cs);
-char		*ret_string_split(char *line, int s);
-
+void					fd_env(t_env *e);
+void					init_env(t_env *e);
+void					clean_fd(t_fd *fd);
+void					check_fd(t_env *e);
+void					ft_check_port(t_env *e, char *port);
+void					ft_error(int i, char *s);
+void					server_loop(t_env *e);
+int						msg_received(t_env *e, int fd);
+void					init_fd(t_env *e);
+void					srv_accept(t_env *e, int s);
+void					do_select(t_env *e);
+void					client_read(t_env *e, int cs);
+void					client_write(t_env *e, int cs);
+int						check_nl(char *str, char **line);
+void					cmd(t_env *e, int cs, char *line);
+void					change_nick_serv(t_env *e, int cs, char *line);
+void					cmd_who(t_env *e, int cs);
+void					join_chan(t_env *e, int cs, char *line);
+void					leave_chan(t_env *e, int cs, char *line);
+void					msg_user(t_env *e, int cs, char *line);
+void					cmd_connect(t_env *e, int cs);
+char					*ret_string_split(char *line, int s);
+int						len_buf_msg(char *s);
+void					client_write(t_env *e, int cs);
+int						ret_fd_value(char *s);
 
 #endif

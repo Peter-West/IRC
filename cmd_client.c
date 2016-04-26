@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cmd_client.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ppellegr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/04/26 18:14:11 by ppellegr          #+#    #+#             */
+/*   Updated: 2016/04/26 18:14:13 by ppellegr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "client.h"
 
 void	change_nick(t_env *e, char *line)
@@ -63,7 +75,7 @@ void	leave_chan(t_env *e, char *line)
 		return ;
 	}
 	split[1] = ft_strtrim(split[1]);
-	if (!ft_strcmp(split[1],e->chan))
+	if (!ft_strcmp(split[1], e->chan))
 	{
 		printf(">> You left %s\n", e->chan);
 		if (e->chan)
@@ -80,32 +92,11 @@ void	msg_user(t_env *e, char *line)
 {
 	char	**split;
 	int		i;
-	(void)e;
 
+	(void)e;
 	i = 0;
 	split = ft_strsplit(line, ' ');
 	printf(">> Message send to %s\n", split[1]);
 	while (split[i])
 		free(split[i++]);
-}
-
-
-void	cmd_connect(t_env *e, char *line)
-{
-	char	**split;
-	int		i;
-
-
-	i = 0;
-	send(e->sockfd, "/connect ", 10, 0);
-	split = ft_strsplit(line, ' ');
-	while (split[i])
-		i++;
-	split[2] = ft_strtrim(split[2]);
-	connect_serv(i, split);
-}
-
-void	cmd_who()
-{
-
 }

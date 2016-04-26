@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   srv_accept.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ppellegr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/04/26 18:16:11 by ppellegr          #+#    #+#             */
+/*   Updated: 2016/04/26 18:16:13 by ppellegr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "irc_server.h"
 
 void			srv_accept(t_env *e, int s)
@@ -16,6 +28,4 @@ void			srv_accept(t_env *e, int s)
 	e->fds[cs].fct_write = client_write;
 	e->fds[cs].nickname = "user";
 	e->fds[cs].channel = NULL;
-
-	// send(cs, "yo\n", 3, 0);
 }

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ppellegr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/04/26 18:11:41 by ppellegr          #+#    #+#             */
+/*   Updated: 2016/04/26 18:11:50 by ppellegr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "client.h"
 
 void	ft_error(int i, char *s)
@@ -43,7 +55,6 @@ int		init(char **argv)
 	return (sock_fd);
 }
 
-
 void	connect_serv(int argc, char **argv)
 {
 	int		sock_fd;
@@ -53,7 +64,7 @@ void	connect_serv(int argc, char **argv)
 	client_loop(sock_fd);
 }
 
-int main(int argc, char **argv)
+int		main(int argc, char **argv)
 {
 	connect_serv(argc, argv);
 	return (0);

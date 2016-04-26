@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ppellegr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/04/26 18:15:46 by ppellegr          #+#    #+#             */
+/*   Updated: 2016/04/26 18:15:48 by ppellegr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "irc_server.h"
 
 void		ft_error(int i, char *s)
@@ -30,14 +42,13 @@ void		init_env(t_env *e)
 	e->serv_ad.sin_family = AF_INET;
 	e->serv_ad.sin_port = htons(e->port);
 	e->serv_ad.sin_addr.s_addr = INADDR_ANY;
-	if (bind(e->sockfd, (struct sockaddr *)&e->serv_ad, sizeof(e->serv_ad)) < 0) {
+	if (bind(e->sockfd,
+		(struct sockaddr *)&e->serv_ad, sizeof(e->serv_ad)) < 0)
 		ft_error(1, "Can't bind");
-	}
 	listen(e->sockfd, 5);
 	e->cli_len = sizeof(e->cli_ad);
-  	e->fds[e->sockfd].type = FD_SERV;
-  	e->fds[e->sockfd].fct_read = srv_accept;
-  	// e->fds[e->sockfd].fct_write = client_write;
+	e->fds[e->sockfd].type = FD_SERV;
+	e->fds[e->sockfd].fct_read = srv_accept;
 }
 
 void		fd_env(t_env *e)
@@ -59,7 +70,7 @@ void		fd_env(t_env *e)
 int			main(int argc, char **argv)
 {
 	t_env	e;
-	
+
 	if (argc == 2)
 		ft_check_port(&e, argv[1]);
 	else
